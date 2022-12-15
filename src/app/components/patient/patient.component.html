@@ -1,0 +1,169 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedPatients()" [disabled]="!selectedPatients || !selectedPatients.length"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
+                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="patients" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','country.name','representative.name','status']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedPatients" selectionMode="multiple" [rowHover]="true" dataKey="_id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Administrar Pacientes</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="lastname">Apellidos <p-sortIcon field="lastname"></p-sortIcon></th>
+                        <th pSortableColumn="age">Edad <p-sortIcon field="age"></p-sortIcon></th>
+                        <th pSortableColumn="allergies">Alergias<p-sortIcon field="allergies"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-patient>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="patient"></p-tableCheckbox>
+                        </td>
+
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Nombre</span>
+                            {{patient.name}}
+                        </td>
+                        
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Apellidos</span>
+                            {{patient.lastname}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Edad</span>
+                            {{patient.age}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Alergias</span>
+                            {{patient.allergies}}
+                        </td>
+                        
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editPatient(patient)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deletePatient(patient)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="patientDialog" [style]="{width: '450px'}" header="Detalles del Servicio" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="name">Nombre's</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="patient.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.name}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.name">Nombre Requerido.</small>
+                </div>
+                <div class="field">
+                    <label for="lastname">Apellido's</label>
+                    <input type="text" pInputText id="lastname" [(ngModel)]="patient.lastname" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.lastname}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.lastname">Apellido Requerido.</small>
+                </div>
+                
+
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="age">Edad</label>
+                        <p-inputNumber id="age" [(ngModel)]="patient.age" ></p-inputNumber>
+                    </div>
+                    <div class="field col">
+                        <label for="weight">Peso</label>
+                        <p-inputNumber id="weight" [(ngModel)]="patient.weight" [maxFractionDigits]="2"></p-inputNumber>
+                    </div>
+                    <div class="field col">
+                        <label for="size">Talla</label>
+                        <p-inputNumber id="size" [(ngModel)]="patient.size" [maxFractionDigits]="2"></p-inputNumber>
+                    </div>
+                    
+                </div>
+
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="temperature">Temperatura</label>
+                        <p-inputNumber id="temperature" [(ngModel)]="patient.temperature" prefix="↑ " suffix="℃" ></p-inputNumber>
+                    </div>
+
+                    <div class="field col">
+                        <label for="heart_rate">FC</label>
+                        <p-inputNumber id="heart_rate" [(ngModel)]="patient.heart_rate" ></p-inputNumber>
+                    </div>
+
+                    <div class="field col">
+                        <label for="breathing_frequency">FR</label>
+                        <p-inputNumber id="breathing_frequency" [(ngModel)]="patient.breathing_frequency" ></p-inputNumber>
+                    </div>
+                </div>
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="blood_pressure">PA</label>
+                        <p-inputNumber id="blood_pressure" [(ngModel)]="patient.blood_pressure" ></p-inputNumber>
+                    </div>
+
+                    <div class="field col">
+                        <label for="oxygen_saturation">SO</label>
+                        <p-inputNumber id="oxygen_saturation" [(ngModel)]="patient.oxygen_saturation" ></p-inputNumber>
+                    </div>
+                    
+                </div>
+
+                <div class="field">
+                    <label for="allergies">Alergias</label>
+                    <textarea id="allergies" pInputTextarea [(ngModel)]="patient.allergies" required rows="3" cols="20"></textarea>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveService()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deletePatientDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="patient">Are you sure you want to delete <b>{{patient.name}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deletePatientDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deletePatientsDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span>Are you sure you want to delete selected services?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deletePatientsDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSelected()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

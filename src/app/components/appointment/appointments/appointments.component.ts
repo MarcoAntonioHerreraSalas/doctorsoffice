@@ -5,10 +5,11 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGrigPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction'; // for dateClick
 import Swal from 'sweetalert2';
-import { AppointmentService } from '../appointment.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { AppointmentService } from '../../../services/appointment.service';
 import * as moment from 'moment';
-import { ServiceService } from '../../service/service.service';
+import { ServiceService } from '../../../services/service.service'
+import { PatientService } from 'src/app/services/patient.service';
+import { Patient } from 'src/app/interfaces/patient.interface';
 
 @Component({
   selector: 'app-appointments',
@@ -24,12 +25,14 @@ export class AppointmentsComponent implements OnInit {
   calendarEvents: EventInput[] = [];
   servicesData = [];
 
+  patientsData: Patient[] = [];
+
   constructor(private elRef: ElementRef, private changeDetectorRef:ChangeDetectorRef, 
-    private appoService: AppointmentService,private _snackBar: MatSnackBar, private serviceService: ServiceService) { }
+    private appoService: AppointmentService, private serviceService: ServiceService, private patientService: PatientService) { }
 
   ngOnInit(): void {
     const myDate = new Date();
-    this.appoService.getAppointments(myDate).subscribe((x) => {
+    this.appoService.getAppointments(myDate).subscribe((x: any) => {
       if(x){
         this.calendarOptions.events = Object.assign([],x);
       }
@@ -39,6 +42,13 @@ export class AppointmentsComponent implements OnInit {
     this.serviceService.getServices().subscribe((x: any) => {
       if(x){
         this.servicesData = x;
+      }
+    })
+
+    
+    this.patientService.getPatients().subscribe((x: any) => {
+      if(x){
+        this.patientsData = x;
       }
     })
   }
@@ -109,37 +119,36 @@ export class AppointmentsComponent implements OnInit {
     }).then(async (result)  => {
       if (result.isConfirmed) {
         
-        const servicio = this.servicesData.map((e: any) => '<option id_servicio="'+e._id+'" value= "'+e.nombre+'" >'+e.nombre+' </option>')
+        const service = this.servicesData.map((e: any) => '<option value= "'+e._id+'" >'+e.nombre+' </option>')
+        const patients = this.patientsData.map((e: any) => '<option  value= "'+e._id+'" >'+e.name+' </option>')
 
         const { value: formValues } = await Swal.fire({
           title: 'Selecciona los datos para agendar Cita',
           html:
-            `<label for="nombre" class="swal2-label">Nombre</label>
-            <input id="nombre" class="swal2-input" >
-            <label for="numero" class="swal2-label">Teléfono</label>
-            <input id="numero"   maxlength="10" minlength="10" class="swal2-input" >
-            <label for="servicio" class="swal2-label">Servicio</label>
+            `<label for="patient" class="swal2-label">Nombre</label>
+            <select class="swal2-input" id="patient"> 
+              <option value= "" >Seleccionar </option>
+              `+patients+`
+            </select><br>
+            <label for="service" class="swal2-label">Servicio</label>
            
-              <select class="swal2-input" id="servicio"> 
+              <select class="swal2-input" id="service"> 
                 <option value= "" >Seleccionar </option>
-                `+servicio+`
+                `+service+`
               </select>
             `,
           focusConfirm: false,
           preConfirm: () => {
 
             
-            const nombre = document.getElementById('nombre')  as HTMLInputElement | null;
-            const numero = document.getElementById('numero') as HTMLInputElement | null;
-            const servicio = document.getElementById('servicio') as HTMLSelectElement | null;
+            const patient = document.getElementById('patient')  as HTMLSelectElement | null;
+            const service = document.getElementById('service') as HTMLSelectElement | null;
 
 
-            if(nombre != null && numero != null && (servicio !=null && servicio.value !="" )){
+            if(patient != null  && (service !=null && service.value !="" )){
               return [
-                nombre.value,
-                numero.value,
-                servicio.value,
-                servicio.options[servicio.selectedIndex].getAttribute('id_servicio')
+                patient.value,
+                service.value,
               ]
             }else{
               Swal.showValidationMessage(`Por favor Llevar los datos correctamente`)
@@ -154,19 +163,17 @@ export class AppointmentsComponent implements OnInit {
         if (formValues) {
 
           const data = {
-            title: 'Servicio de: '+ formValues[0],
-            nombre: formValues[0],
-            numero: formValues[1],
-            servicio: formValues[2],
-            id_servicio:formValues[3],
+            id_patient:formValues[0],
+            id_service:formValues[1],
             start: arg.date,
             allDay: arg.allDay
           }
 
-          this.appoService.addAppointment(data).subscribe((x) => {
+          this.appoService.addAppointment(data).subscribe((x: any) => {
             if(x){
-              this.calendarEvents.push(data);
-              this.appoService.getAppointments(this.calendarComponent.getApi().getDate()).subscribe((x) => {
+              this.calendarEvents.push(x);
+
+              this.appoService.getAppointments(this.calendarComponent.getApi().getDate()).subscribe((x: any) => {
                 if(x){
                   this.calendarOptions.events = Object.assign([],x);
                   this.changeDetectorRef.detectChanges();
@@ -175,12 +182,7 @@ export class AppointmentsComponent implements OnInit {
             }
 
           },(e) =>{
-            this._snackBar.open(e.error.error, "Error", {
-              duration: 5000,
-              horizontalPosition: "right",
-              verticalPosition: "top",
-              // direction: "rtl"
-            });
+            console.log(e)
           })
 
         } 
@@ -199,7 +201,6 @@ export class AppointmentsComponent implements OnInit {
       confirmButtonText: 'Ver Detalle',
       denyButtonText: `Eliminar`,
     }).then((result) => {
-
       const detail = arg.event._def.extendedProps;
 
       if (result.isConfirmed) {
@@ -207,9 +208,9 @@ export class AppointmentsComponent implements OnInit {
           title: '<strong>Detalle De La Cita </strong>',
           icon: 'info',
           html:
-            '<b>Nombre: </b>' +detail.nombre + '<br>'+
-            '<b>Número: </b>' +detail.numero  + '<br>' +
-            '<b>Servicio: </b>'+detail.servicio  + '<br>',
+            '<b>Nombres: </b>' +detail.patient.name + '<br>'+
+            '<b>Apellidos: </b>' +detail.patient.lastname  + '<br>' +
+            '<b>Servicio: </b>'+detail.service.nombre  + '<br>',
           showCloseButton: true,
           showCancelButton: false,
           focusConfirm: false,
@@ -222,7 +223,7 @@ export class AppointmentsComponent implements OnInit {
         const eventDelete = moment(arg.event.start).format('DD.MM.YYYY HH:mm');
         
         if(now <  eventDelete){
-          this.appoService.deleteAppointment(detail._id).subscribe((x) => {
+          this.appoService.deleteAppointment(detail._id).subscribe((x: any) => {
               if(x){
                 Swal.fire('Se elimino correctamente la cita.', '', 'success')
                 arg.event.remove();
@@ -262,7 +263,7 @@ export class AppointmentsComponent implements OnInit {
           break;
     }
 
-    this.appoService.getAppointments(calendarApi.getDate()).subscribe((x) => {
+    this.appoService.getAppointments(calendarApi.getDate()).subscribe((x: any) => {
       console.log(x);
     })
 

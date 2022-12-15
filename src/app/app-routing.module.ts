@@ -34,6 +34,21 @@ const routes: Routes = [
           loadChildren: () => import('./components/user/user.module').then((m) => m.UserModule),
           canActivate: [RoleGuard]
         },
+        {
+          path:"patients",
+          loadChildren: () => import('./components/patient/patient.module').then((m) => m.PatientModule),
+          canActivate: [RoleGuard]
+        },
+        {
+          path:"doctors",
+          loadChildren: () => import('./components/doctor/doctor.module').then((m) => m.DoctorModule),
+          canActivate: [RoleGuard]
+        },
+        {
+          path:"appointments",
+          loadChildren: () => import('./components/appointment/appointment.module').then((m) => m.AppointmentModule),
+          canActivate: [RoleGuard]
+        },
         /*{
           path:"schedule",
           loadChildren: () => import('./components/schedule/schedule.module').then((m) => m.ScheduleModule),

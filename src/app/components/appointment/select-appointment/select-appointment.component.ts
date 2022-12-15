@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ServiceService } from '../../service/service.service';
-import { AppointmentService } from '../appointment.service';
+import { ServiceService } from '../../../services/service.service';
+import { AppointmentService } from '../../../services/appointment.service';
 
 export interface appoInterface {
   _id: string;
@@ -38,7 +38,7 @@ export class SelectAppointmentComponent implements OnInit {
 
   selectAppointment(element: appoInterface){
     
-    this.serviceService.getService(element.id_servicio).subscribe((x) => {
+    this.serviceService.getService(element.id_servicio).subscribe((x:any) => {
       this.SelectServiceModal.emit(x);
     })
   //  this.closeSelectServiceModalF();

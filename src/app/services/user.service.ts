@@ -31,7 +31,9 @@ export class UserService {
     {label: 'Usuarios', value:'users'},
     {label: 'Pacientes', value:'patients'},
     {label: 'Ventas', value:'sales'},
-    {label: 'Productos', value:'products'}];
+    {label: 'Productos', value:'products'},
+    {label: 'Doctores', value:'doctors'},
+  ];
 
   constructor(private http: HttpClient) { }
 
