@@ -49,6 +49,11 @@ const routes: Routes = [
           loadChildren: () => import('./components/appointment/appointment.module').then((m) => m.AppointmentModule),
           canActivate: [RoleGuard]
         },
+        {
+          path:"configuration",
+          loadChildren: () => import('./components/configuration/configuration.module').then((m) => m.ConfigurationModule),
+          canActivate: [RoleGuard]
+        },
         /*{
           path:"schedule",
           loadChildren: () => import('./components/schedule/schedule.module').then((m) => m.ScheduleModule),

@@ -1,0 +1,51 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <h4 class="mb-56">Horarios de Trabajo</h4>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Actualizar Horario" icon="pi pi-spinner" class="p-button-primary mr-2"   (click)="saveSchedule()" ></button> <br>
+                    </div>
+                    </ng-template>
+                </p-toolbar>
+            <div class="table-responsive"> 
+
+                <form  >
+                    <ng-container *ngFor="let a of weekDays">
+                        <h4>{{a | titlecase}}</h4>
+        
+                        <div class="formgrid grid" [formGroup]="getMyGroup(a)">
+                            <div class="field col">
+                                    <label>Inicio Jornada</label>
+                                    <input pInputText type="time" min="09:00" max="18:00"
+                                        formControlName="inicioHorario" name="inicioHorario"  >
+                            </div>
+                            <div class="field col">
+                                    <label>Fin Jornada</label>
+                                    <input pInputText type="time" min="09:00" max="18:00" formControlName="finHorario" name="finHorario"  >
+                            </div>
+                            <div class="field col">
+                                    <label>Horas de Descanso</label>
+                                    <p-inputNumber placeholder="1" value="1" type="number" formControlName="horasDescanso" name="horasDescanso"></p-inputNumber>
+                            </div>
+                            <div class="field col">
+                                    <label>Comienzo Descanso</label>
+                                    <input pInputText type="time" min="09:00" max="18:00" formControlName="comienzoDeDescanso" name="comienzoDeDescanso"  >
+                            </div>
+                            <div class="field col">
+                                    <label> Citas Disponibles Por Horario</label>
+                                    <input pInputText placeholder="1" value="1" type="number" formControlName="citasDisponiblesPorHorario"
+                                        name="citasDisponiblesPorHorario">
+                            </div>
+                        </div>
+                    </ng-container>
+        
+        
+                    
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

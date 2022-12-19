@@ -49,11 +49,7 @@ export class AppMenuComponent implements OnInit {
                         icon: 'pi pi-fw pi-briefcase',
                         routerLink: ['/services']
                     },
-                    {
-                        label: 'Horario',
-                        icon: 'pi pi-fw pi-clock',
-                        routerLink: ['/schedule']
-                    },
+                    
                     {
                         label: 'Ventas',
                         icon: 'pi pi-fw pi-shopping-cart',
@@ -104,6 +100,11 @@ export class AppMenuComponent implements OnInit {
                         label: 'Empty',
                         icon: 'pi pi-fw pi-circle-off',
                         routerLink: ['/pages/empty']
+                    },
+                    {
+                        label: 'Configuración',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/configuration']
                     },
                 ]
             },
