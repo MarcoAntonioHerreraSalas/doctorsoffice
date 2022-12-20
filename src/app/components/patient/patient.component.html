@@ -33,7 +33,7 @@
                         </th>
                         <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="lastname">Apellidos <p-sortIcon field="lastname"></p-sortIcon></th>
-                        <th pSortableColumn="age">Edad <p-sortIcon field="age"></p-sortIcon></th>
+                        <th pSortableColumn="birthday">Fecha Nacimiento <p-sortIcon field="birthday"></p-sortIcon></th>
                         <th pSortableColumn="allergies">Alergias<p-sortIcon field="allergies"></p-sortIcon></th>
                         <th></th>
                     </tr>
@@ -54,8 +54,8 @@
                             {{patient.lastname}}
                         </td>
                         <td style="width:14%; min-width:8rem;">
-                            <span class="p-column-title">Edad</span>
-                            {{patient.age}}
+                            <span class="p-column-title">Fecha Nacimiento</span>
+                            {{patient.birthday | date}}
                         </td>
                         <td style="width:14%; min-width:8rem;">
                             <span class="p-column-title">Alergias</span>
@@ -73,25 +73,39 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="patientDialog" [style]="{width: '450px'}" header="Detalles del Servicio" [modal]="true" class="p-fluid">
+        <p-dialog [(visible)]="patientDialog" [style]="{width: '650px'}" header="Detalles del Servicio" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
-                <div class="field">
-                    <label for="name">Nombre's</label>
-                    <input type="text" pInputText id="name" [(ngModel)]="patient.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.name}"/>
-                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.name">Nombre Requerido.</small>
+                <div class="formgrid grid">
+
+                    <div class="field col">
+                        <label for="name">Nombre's</label>
+                        <input type="text" pInputText id="name" [(ngModel)]="patient.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.name}"/>
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.name">Nombre Requerido.</small>
+                    </div>
+                    <div class="field col">
+                        <label for="lastname">Apellido's</label>
+                        <input type="text" pInputText id="lastname" [(ngModel)]="patient.lastname" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.lastname}"/>
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.lastname">Apellido Requerido.</small>
+                    </div>
+                    
                 </div>
-                <div class="field">
-                    <label for="lastname">Apellido's</label>
-                    <input type="text" pInputText id="lastname" [(ngModel)]="patient.lastname" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.lastname}"/>
-                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.lastname">Apellido Requerido.</small>
-                </div>
-                
 
                 <div class="formgrid grid">
                     <div class="field col">
-                        <label for="age">Edad</label>
-                        <p-inputNumber id="age" [(ngModel)]="patient.age" ></p-inputNumber>
+                        <label for="age">Fecha de Nacimiento</label>
+                        <p-calendar [(ngModel)]="patient.birthday"  [showIcon]="true" inputId="icon"></p-calendar>
                     </div>
+                    <div class="field col">
+                        <label for="phone_number">Teléfono</label>
+                        <p-inputMask   id="phone_number" mask="(999) 999-9999" [(ngModel)]="patient.phone_number"   [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.phone_number}"></p-inputMask>
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.phone_number">Teléfono Requerido.</small>
+    
+                    </div>
+                    
+                    
+                </div>
+
+                <div class="formgrid grid">
                     <div class="field col">
                         <label for="weight">Peso</label>
                         <p-inputNumber id="weight" [(ngModel)]="patient.weight" [maxFractionDigits]="2"></p-inputNumber>
@@ -100,15 +114,15 @@
                         <label for="size">Talla</label>
                         <p-inputNumber id="size" [(ngModel)]="patient.size" [maxFractionDigits]="2"></p-inputNumber>
                     </div>
-                    
-                </div>
 
-                <div class="formgrid grid">
                     <div class="field col">
                         <label for="temperature">Temperatura</label>
                         <p-inputNumber id="temperature" [(ngModel)]="patient.temperature" prefix="↑ " suffix="℃" ></p-inputNumber>
                     </div>
 
+                    
+                </div>
+                <div class="formgrid grid">
                     <div class="field col">
                         <label for="heart_rate">FC</label>
                         <p-inputNumber id="heart_rate" [(ngModel)]="patient.heart_rate" ></p-inputNumber>
@@ -118,8 +132,7 @@
                         <label for="breathing_frequency">FR</label>
                         <p-inputNumber id="breathing_frequency" [(ngModel)]="patient.breathing_frequency" ></p-inputNumber>
                     </div>
-                </div>
-                <div class="formgrid grid">
+                    
                     <div class="field col">
                         <label for="blood_pressure">PA</label>
                         <p-inputNumber id="blood_pressure" [(ngModel)]="patient.blood_pressure" ></p-inputNumber>

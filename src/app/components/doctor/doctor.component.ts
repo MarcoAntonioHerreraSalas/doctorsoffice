@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import * as moment from 'moment';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Doctor } from 'src/app/interfaces/doctor.interface';
@@ -43,15 +44,18 @@ export class DoctorComponent implements OnInit {
         this.deleteDoctorDialog = true;
     }
 
-    editDoctor(service: Doctor) {
-        this.doctor = { ...service };
-        this.doctorDialog = true;
+    editDoctor(doctor: Doctor) {
+        const formatedDate = moment(doctor.birthday, moment.ISO_8601).format("MM/DD/YYYY");
+        const date = new Date(formatedDate)
+        doctor.birthday = date;
 
+        this.doctor = { ...doctor };
+        this.doctorDialog = true;
     }
 
-    deleteDoctor(service: Doctor) {
+    deleteDoctor(doctor: Doctor) {
         this.deleteDoctorDialog = true;
-        this.doctor = { ...service };
+        this.doctor = { ...doctor };
     }
 
     confirmDeleteSelected() {

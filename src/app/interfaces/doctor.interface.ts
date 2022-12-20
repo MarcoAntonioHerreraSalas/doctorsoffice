@@ -3,7 +3,7 @@ export  interface Doctor {
     __v?: number,
     name?: string,
     lastname?: string,
-    age?: number,
+    birthday?: Date,
     phone_number?: string,
     personal_number?: string,
     speciality?: string,

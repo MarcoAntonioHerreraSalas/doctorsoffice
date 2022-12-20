@@ -33,7 +33,7 @@
                         </th>
                         <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="lastname">Apellidos <p-sortIcon field="lastname"></p-sortIcon></th>
-                        <th pSortableColumn="age">Edad <p-sortIcon field="age"></p-sortIcon></th>
+                        <th pSortableColumn="birthday">F-Nacimiento <p-sortIcon field="birthday"></p-sortIcon></th>
                         <th pSortableColumn="speciality">Especialidad<p-sortIcon field="speciality"></p-sortIcon></th>
                         <th></th>
                     </tr>
@@ -54,8 +54,8 @@
                             {{doctor.lastname}}
                         </td>
                         <td style="width:14%; min-width:8rem;">
-                            <span class="p-column-title">Edad</span>
-                            {{doctor.age}}
+                            <span class="p-column-title">Fecha Nacimiento</span>
+                            {{doctor.birthday | date}}
                         </td>
                         <td style="width:14%; min-width:8rem;">
                             <span class="p-column-title">Especialidad</span>
@@ -105,8 +105,8 @@
 
                 <div class="formgrid grid">
                     <div class="field col">
-                        <label for="age">Edad</label>
-                        <p-inputNumber id="age" [(ngModel)]="doctor.age"   [ngClass]="{'ng-invalid ng-dirty' : submitted && !doctor.age}"></p-inputNumber>
+                        <label for="birthday">Fecha Nacimiento</label>
+                        <p-calendar [(ngModel)]="doctor.birthday"  [showIcon]="true" inputId="icon"></p-calendar>
                     </div>
                     
                     <div class="field col">

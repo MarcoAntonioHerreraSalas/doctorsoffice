@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -14,6 +14,10 @@ import { PhotoService } from './demo/service/photo.service';
 import { HttpClientModule,HTTP_INTERCEPTORS  } from '@angular/common/http';
 import {LoginInterceptorService} from './interceptors/login-interceptor.service';
 
+import localEs from '@angular/common/locales/es'
+import {registerLocaleData} from '@angular/common'
+registerLocaleData(localEs,'es')
+
 @NgModule({
     declarations: [
         AppComponent, NotfoundComponent
@@ -22,7 +26,7 @@ import {LoginInterceptorService} from './interceptors/login-interceptor.service'
         AppRoutingModule,
         AppLayoutModule
     ],
-    providers: [
+    providers: [{provide: LOCALE_ID,useValue:'es'},
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService,

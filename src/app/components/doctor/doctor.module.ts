@@ -17,6 +17,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputMaskModule } from 'primeng/inputmask';
 import { DialogModule } from 'primeng/dialog';
+import {CalendarModule} from 'primeng/calendar'
 
 @NgModule({
     imports: [
@@ -36,6 +37,7 @@ import { DialogModule } from 'primeng/dialog';
         RadioButtonModule,
         InputNumberModule,InputMaskModule,
         DialogModule,
+        CalendarModule
     ],
     declarations: [DoctorComponent]
 })
